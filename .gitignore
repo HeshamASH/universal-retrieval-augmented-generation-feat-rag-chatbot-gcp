@@ -1,0 +1,21 @@
+# Node
+node_modules
+.next
+npm-debug.log
+*.log
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+venv/
+ENV/
+env/
+env.bak
+venv.bak
+
+# Vercel
+.vercel

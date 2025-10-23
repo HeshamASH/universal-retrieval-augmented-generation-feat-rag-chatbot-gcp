@@ -1,0 +1,32 @@
+# Stage 1: Build the base image with dependencies
+FROM python:3.11-slim as builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential
+
+# Set up a virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Create the final production image
+FROM python:3.11-slim as final
+
+WORKDIR /app
+
+# Copy the virtual environment from the builder stage
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy the application code
+COPY ./app ./app
+
+# Set the entrypoint for the Celery worker
+# The worker service is internal, so it doesn't need to expose a port.
+# Cloud Run will start this container and it will begin listening for tasks.
+CMD ["celery", "-A", "app.core.celery_app.celery", "worker", "--loglevel=info"]
