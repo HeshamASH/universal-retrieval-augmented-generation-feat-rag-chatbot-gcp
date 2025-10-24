@@ -18,7 +18,7 @@ const nextConfig = {
                      {
                          from: path.join(
                              path.dirname(require.resolve('pdfjs-dist/package.json')),
-                             'build/pdf.worker.min.mjs'
+                             'build/pdf.worker.min.js'
                          ),
                          to: path.join(__dirname, 'public/static/scripts'),
                      },
